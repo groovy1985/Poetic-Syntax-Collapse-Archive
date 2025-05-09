@@ -1,0 +1,36 @@
+name: Generate Syntax Collapse Log
+
+on:
+  schedule:
+    # 1日2回実行（日本時間で毎日0:00, 8:00 → 米国の朝と夕方に相当）
+    - cron: "0 15,23 * * *"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies (if any)
+        run: pip install --upgrade pip
+
+      - name: Generate syntax collapse log
+        run: python generate_collapse_log.py
+
+      - name: Update README
+        run: python update_readme.py
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add log*.md README.md
+          git commit -m "Auto: Generate new syntax collapse log" || echo "No changes to commit"
+          git push
