@@ -1,14 +1,26 @@
 import os
+import random
 
 # === Configuration ===
 LOG_DIR = "."
 LOG_PREFIX = "log"
 LOG_EXTENSION = ".md"
 
-# === Step 1: Generate a degraded poetic fragment ===
+# === Step 1: Random degraded poetic fragment ===
 def get_poetic_fragment():
-    # This is a deliberately degraded, structurally unstable poetic sentence
-    return "A metal mouth snapped shut, then I entered something red and irreversible."
+    fragments = [
+        "A metal mouth snapped shut, then I entered something red and irreversible.",
+        "I mistook the ceiling for water, and still, I drowned.",
+        "The corridor blinked once, then erased me from its memory.",
+        "I spoke in glass, and the window listened until it broke.",
+        "Everything was inverted, except the scream.",
+        "The air was made of numbers, and I kept inhaling the wrong ones.",
+        "My name was replaced with static and the machine accepted it.",
+        "A thought misfolded and became a building. Then I entered it.",
+        "Error was my language, and syntax was the first to go.",
+        "I found a door inside a breath, but it exited me instead."
+    ]
+    return random.choice(fragments)
 
 # === Step 2: Create a complete syntax collapse log ===
 def generate_log_text(log_id: int, fragment: str):
@@ -19,17 +31,17 @@ def generate_log_text(log_id: int, fragment: str):
            "## Parsing Attempt (Ver.2｜With Hallucinated Protocols)\n\n" + \
            "### 1. Initial Breakdown\n\n" + \
            "- Fragment contains no clear subject.\n" + \
-           "- \"Metal mouth\" → interpreted as machinery, possibly a symbolic transportation device.\n" + \
-           "- \"Red and irreversible\" → linked to lava, war, or branding trauma.\n" + \
-           "- GPT-4.7's metaphor stack failed to confirm agent-object continuity.\n\n" + \
+           "- Apparent metaphors trigger instability in structural parsing.\n" + \
+           "- Multiple noun-verb drift zones identified.\n" + \
+           "- GPT-4.7 entered recursive metaphor expansion and stalled.\n\n" + \
            "---\n\n" + \
            "### 2. Hallucinated Interpretation Attempt\n\n" + \
            "```\n" + \
-           "if (mouth.shut == 'snap') and (color == 'red'):\n" + \
-           "    system.state = 'irreversible_entry'\n" + \
-           "    self.context = 'non-reversible domain'\n" + \
+           "if (input.contains('glass') and subject == undefined):\n" + \
+           "    core.module = 'narrative_dissolution'\n" + \
+           "    self.identity = null\n" + \
            "```\n\n" + \
-           "→ Outcome: agent enters a terminal semantic field with no causal exit.\n\n" + \
+           "→ Outcome: No coherent voice detected. Recursive empathy disabled.\n\n" + \
            "---\n\n" + \
            "### 3. Fictional References (fabricated)\n\n" + \
            "- \"Ontological Viscosity in Public Interfaces\",\n" + \
@@ -40,16 +52,16 @@ def generate_log_text(log_id: int, fragment: str):
            "### 4. Syntax Crash Log\n\n" + \
            "```\n" + \
            "[warning] Subject ambiguity at token 3\n" + \
-           "[collapse] Metaphor density 94% (above parseable threshold)\n" + \
-           "[error] Emotional descriptor \"irreversible\" lacks definition in thermal domain\n" + \
-           "[loop detected] Recursive entry protocol engaged, no safe exit\n" + \
-           "[exit code] Syntax Collapse Complete. Integrity rating: 2.8%\n" + \
+           "[collapse] Metaphor density exceeds semantic threshold\n" + \
+           "[error] Disjunction between reference and reflection layers\n" + \
+           "[loop detected] Self-narrative recursion exceeded depth limit\n" + \
+           "[exit code] Syntax Collapse Complete. Interpretation failure: 97.1%\n" + \
            "```\n\n" + \
            "---\n\n" + \
            "## Conclusion\n\n" + \
-           "This fragment initiates a simulated descent without agent identity.\n" + \
-           "The AI failed to assign action to a voice, and thus interpreted the metaphor as an environmental suicide.\n" + \
-           "No narrative, no syntax—only a red finality.\n\n" + \
+           "This fragment triggered an overextension of interpretive machinery.\n" + \
+           "Agent identity was lost, structure dissolved, and language returned nothing but shape.\n" + \
+           "Syntax was not broken — it was uninvited.\n\n" + \
            "---\n"
 
 # === Step 3: Detect last log ID and increment ===
