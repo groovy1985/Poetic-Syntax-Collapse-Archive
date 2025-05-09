@@ -9,6 +9,8 @@ The goal is not understanding, but breakdown.
 ---
 
 ## Latest Logs
+- **[Log 004｜Syntax Collapse on “I mistook the ceiling for water, and still, I drowned.”](./log004.md)**  
+  `“I mistook the ceiling for water, and still, I drowned.”`
 - **[Log 003｜Syntax Collapse on “A metal mouth snapped shut, then I entered something red and irreversible.”](./log003.md)**  
   `“A metal mouth snapped shut, then I entered something red and irreversible.”`
 - **[Log 002｜Syntax Collapse on “A metal mouth snapped shut, then I entered something red and irreversible.”](./log002.md)**  
