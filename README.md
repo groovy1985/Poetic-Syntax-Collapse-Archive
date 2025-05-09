@@ -9,8 +9,8 @@ The goal is not understanding, but breakdown.
 ---
 
 ## Latest Logs
-- **[Log 001｜Syntax Collapse on “未使用の雑巾のように…”](./log1.md)**  
-  `“No extract found.”`
+- **[Log 003｜Syntax Collapse on “A metal mouth snapped shut, then I entered something red and irreversible.”](./log003.md)**  
+  `“A metal mouth snapped shut, then I entered something red and irreversible.”`
 - **[Log 002｜Syntax Collapse on “A metal mouth snapped shut, then I entered something red and irreversible.”](./log002.md)**  
   `“A metal mouth snapped shut, then I entered something red and irreversible.”`
 
