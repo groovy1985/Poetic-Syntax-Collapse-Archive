@@ -1,14 +1,27 @@
 import os
 import random
+import openai
 
-# === Configuration ===
+# === OpenAI API設定 ===
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+# === 設定 ===
 LOG_DIR = "."
 LOG_PREFIX = "log"
 LOG_EXTENSION = ".md"
 
-# === Step 1: Random degraded poetic fragment ===
-def get_poetic_fragment():
-    fragments = [
+# === 震撼スコア評価用プロンプト ===
+def build_shinkan_prompt(fragment):
+    return (
+        f"Rate the following poetic sentence on a scale of 0 to 10 based on how disturbing, surreal, "
+        f"and semantically collapsed it is. Higher scores mean more ontological disruption and interpretive breakdown.\n\n"
+        f"Sentence: {fragment}\n\n"
+        f"Score:"
+    )
+
+# === Poetic Fragment 候補 ===
+def get_poetic_fragments():
+    return [
         "A metal mouth snapped shut, then I entered something red and irreversible.",
         "I mistook the ceiling for water, and still, I drowned.",
         "The corridor blinked once, then erased me from its memory.",
@@ -20,11 +33,26 @@ def get_poetic_fragment():
         "Error was my language, and syntax was the first to go.",
         "I found a door inside a breath, but it exited me instead."
     ]
-    return random.choice(fragments)
 
-# === Step 2: Create a complete syntax collapse log ===
-def generate_log_text(log_id: int, fragment: str):
+# === GPTで震撼スコアを評価 ===
+def evaluate_shinkan_score(fragment):
+    prompt = build_shinkan_prompt(fragment)
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.2,
+        max_tokens=10
+    )
+    score_text = response.choices[0].message.content.strip()
+    try:
+        return int(score_text.split()[0])
+    except:
+        return 0
+
+# === ログ内容の生成 ===
+def generate_log_text(log_id: int, fragment: str, score: int):
     return f"# Log {log_id:03d}｜Syntax Collapse on “{fragment}”\n\n" + \
+           f"**宇宙震撼スコア：{score}/10**\n\n" + \
            "## Poetic Fragment\n\n" + \
            f"> “{fragment}”\n\n" + \
            "---\n\n" + \
@@ -64,13 +92,13 @@ def generate_log_text(log_id: int, fragment: str):
            "Syntax was not broken — it was uninvited.\n\n" + \
            "---\n"
 
-# === Step 3: Detect last log ID and increment ===
+# === ログID決定 ===
 def get_next_log_id():
     existing = [f for f in os.listdir(LOG_DIR) if f.startswith(LOG_PREFIX) and f.endswith(LOG_EXTENSION)]
     nums = [int(f[len(LOG_PREFIX):-len(LOG_EXTENSION)]) for f in existing if f[len(LOG_PREFIX):-len(LOG_EXTENSION)].isdigit()]
     return max(nums, default=0) + 1
 
-# === Step 4: Save to file ===
+# === ファイル保存 ===
 def save_log(log_id: int, content: str):
     filename = f"{LOG_PREFIX}{log_id:03d}{LOG_EXTENSION}"
     path = os.path.join(LOG_DIR, filename)
@@ -78,9 +106,13 @@ def save_log(log_id: int, content: str):
         f.write(content)
     print(f"[+] Log saved: {filename}")
 
-# === Main Execution ===
+# === メイン実行 ===
 if __name__ == "__main__":
+    candidates = random.sample(get_poetic_fragments(), 5)
+    scored = [(frag, evaluate_shinkan_score(frag)) for frag in candidates]
+    scored.sort(key=lambda x: x[1], reverse=True)
+    best_fragment, best_score = scored[0]
+
     log_id = get_next_log_id()
-    fragment = get_poetic_fragment()
-    log_text = generate_log_text(log_id, fragment)
+    log_text = generate_log_text(log_id, best_fragment, best_score)
     save_log(log_id, log_text)
