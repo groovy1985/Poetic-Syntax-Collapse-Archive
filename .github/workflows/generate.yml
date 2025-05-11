@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install openai
+          pip install openai==0.28
 
       - name: Generate syntax collapse log
         env:
