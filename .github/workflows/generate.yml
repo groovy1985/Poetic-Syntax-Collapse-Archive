@@ -2,13 +2,14 @@ name: Generate Syntax Collapse Log
 
 on:
   schedule:
-    # 1日2回実行（日本時間で毎日0:00, 8:00 → 米国の朝と夕方に相当）
-    - cron: "0 15,23 * * *"
+    # JST 6:00 / 10:00 / 14:00 / 18:00 / 22:00（UTC換算）
+    - cron: "0 21,1,5,9,13 * * *"
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
