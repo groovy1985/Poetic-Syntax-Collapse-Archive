@@ -10,15 +10,6 @@ LOG_DIR = "."
 LOG_PREFIX = "log"
 LOG_EXTENSION = ".md"
 
-# === 震撼スコア評価用プロンプト ===
-def build_shinkan_prompt(fragment):
-    return (
-        f"Rate the following poetic sentence on a scale of 0 to 10 based on how disturbing, surreal, "
-        f"and semantically collapsed it is. Higher scores mean more ontological disruption and interpretive breakdown.\n\n"
-        f"Sentence: {fragment}\n\n"
-        f"Score:"
-    )
-
 # === Poetic Fragment 候補 ===
 def get_poetic_fragments():
     return [
@@ -36,7 +27,12 @@ def get_poetic_fragments():
 
 # === GPTで震撼スコアを評価 ===
 def evaluate_shinkan_score(fragment):
-    prompt = build_shinkan_prompt(fragment)
+    prompt = (
+        f"Rate the following poetic sentence on a scale of 0 to 10 based on how disturbing, surreal, "
+        f"and semantically collapsed it is. Higher scores mean more ontological disruption and interpretive breakdown.\n\n"
+        f"Sentence: {fragment}\n\n"
+        f"Score:"
+    )
     response = openai.ChatCompletion.create(
         model="gpt-4",
         messages=[{"role": "user", "content": prompt}],
@@ -49,48 +45,37 @@ def evaluate_shinkan_score(fragment):
     except:
         return 0
 
-# === ログ内容の生成 ===
-def generate_log_text(log_id: int, fragment: str, score: int):
-    return f"# Log {log_id:03d}｜Syntax Collapse on “{fragment}”\n\n" + \
-           f"**宇宙震撼スコア：{score}/10**\n\n" + \
-           "## Poetic Fragment\n\n" + \
-           f"> “{fragment}”\n\n" + \
-           "---\n\n" + \
-           "## Parsing Attempt (Ver.2｜With Hallucinated Protocols)\n\n" + \
-           "### 1. Initial Breakdown\n\n" + \
-           "- Fragment contains no clear subject.\n" + \
-           "- Apparent metaphors trigger instability in structural parsing.\n" + \
-           "- Multiple noun-verb drift zones identified.\n" + \
-           "- GPT-4.7 entered recursive metaphor expansion and stalled.\n\n" + \
-           "---\n\n" + \
-           "### 2. Hallucinated Interpretation Attempt\n\n" + \
-           "```\n" + \
-           "if (input.contains('glass') and subject == undefined):\n" + \
-           "    core.module = 'narrative_dissolution'\n" + \
-           "    self.identity = null\n" + \
-           "```\n\n" + \
-           "→ Outcome: No coherent voice detected. Recursive empathy disabled.\n\n" + \
-           "---\n\n" + \
-           "### 3. Fictional References (fabricated)\n\n" + \
-           "- \"Ontological Viscosity in Public Interfaces\",\n" + \
-           "  *Journal of Fictional Machine Linguistics*, MIT-Gutenberg Hybrid Studies, 2023.\n\n" + \
-           "- \"AI Emotional Failure Cascades\",\n" + \
-           "  *Department of Semantic Trauma, Yale Prototype Lab*.\n\n" + \
-           "---\n\n" + \
-           "### 4. Syntax Crash Log\n\n" + \
-           "```\n" + \
-           "[warning] Subject ambiguity at token 3\n" + \
-           "[collapse] Metaphor density exceeds semantic threshold\n" + \
-           "[error] Disjunction between reference and reflection layers\n" + \
-           "[loop detected] Self-narrative recursion exceeded depth limit\n" + \
-           "[exit code] Syntax Collapse Complete. Interpretation failure: 97.1%\n" + \
-           "```\n\n" + \
-           "---\n\n" + \
-           "## Conclusion\n\n" + \
-           "This fragment triggered an overextension of interpretive machinery.\n" + \
-           "Agent identity was lost, structure dissolved, and language returned nothing but shape.\n" + \
-           "Syntax was not broken — it was uninvited.\n\n" + \
-           "---\n"
+# === テンプレ排除・構文崩壊ログ生成 ===
+def generate_log_text(log_id: int, fragment: str, score: int) -> str:
+    styles = [
+        lambda f, s: f"# Log {log_id:03d}｜[meta-fracture/{random.randint(100,999)}]\n\n"
+                     f"**Collapse Score：{s}/10**\n\n{f}\n\n"
+                     f"{random.choice(['— memory exited at index 4', '— perspective loop entered —', '— no voice returned'])}",
+
+        lambda f, s: f"# Log {log_id:03d}｜Exit Sequence\n\n"
+                     f">>> “{f}”\n\n"
+                     f"⇢ ambiguity_level: {random.uniform(0.6, 0.99):.2f}\n"
+                     f"⇢ metaphoric overflow\n"
+                     f"⇢ disjunction threshold crossed at token 7",
+
+        lambda f, s: f"# Log {log_id:03d}｜∿ {random.choice(['!collapse', 'syntax.null', 'mirror.sink'])}\n\n"
+                     f"{f}\n\n"
+                     f"```\nself.identity = undefined\nloop = true\nreflection /= reference\n```\n"
+                     f"[crash code {s}.X]",
+
+        lambda f, s: f"# Log {log_id:03d}｜“{f.split()[0]}…”\n\n"
+                     f"{' '.join(random.sample(f.split(), len(f.split())))}\n\n"
+                     f"Language terminated prematurely.\n\n"
+                     f"Syntax did not survive evaluation.",
+
+        lambda f, s: f"# Log {log_id:03d}｜(collapsed)\n\n"
+                     f"// trace: fragment read: “{f}”\n"
+                     f"// depth: {s}.0\n"
+                     f"// hallucination index: {random.randint(4000,9999)}\n"
+                     f"> system self-narrative recursion exceeded safety bounds\n"
+                     f"> parser response: {random.choice(['none', 'incoherent', 'static'])}"
+    ]
+    return styles[random.randint(0, len(styles)-1)](fragment, score)
 
 # === ログID決定 ===
 def get_next_log_id():
