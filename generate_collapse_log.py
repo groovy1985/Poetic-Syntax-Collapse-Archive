@@ -6,15 +6,15 @@ from datetime import datetime
 # === OpenAI API設定 ===
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# === ログ保存ディレクトリ ===
+# === 保存先設定 ===
 LOG_DIR = "logs"
 os.makedirs(LOG_DIR, exist_ok=True)
 
-# === 詩的フラグメント候補 ===
+# === Poetic Fragment 候補（必要に応じて外部化可能） ===
 def get_poetic_fragments():
     return [
-        "A metal mouth snapped shut, then I entered something red and irreversible.",
         "I mistook the ceiling for water, and still, I drowned.",
+        "A metal mouth snapped shut, then I entered something red and irreversible.",
         "The corridor blinked once, then erased me from its memory.",
         "I spoke in glass, and the window listened until it broke.",
         "Everything was inverted, except the scream.",
@@ -25,7 +25,7 @@ def get_poetic_fragments():
         "I found a door inside a breath, but it exited me instead."
     ]
 
-# === KZスコア評価 ===
+# === KZスコア評価プロンプト ===
 def evaluate_kz_score(fragment):
     prompt = (
         f"Evaluate the following poetic fragment with a KZ9.2 collapse score (0–10) based on:\n"
@@ -47,38 +47,79 @@ def evaluate_kz_score(fragment):
     except:
         return 0
 
-# === ログ本文生成 ===
+# === スタイルテンプレ群（毎回切替／既視感排除） ===
 def generate_log_text(fragment: str, score: int) -> str:
-    styles = [
-        # 改良型 collapsed スタイル
-        lambda f, s: f"""# Syntax Disintegration Log [{datetime.now().strftime("%Y%m%d")}]
+    templates = [
 
-Poetic Fragment:
-“{f}”
+        # ① 臨床記録風
+        lambda f, s: f"""### Clinical Syntax Disintegration File
 
-System Response (Simulated via GPT-Soma 9.2)
-────────────────────────────────────────────
-[ 01 ] Input fragment failed anchor detection (token entropy > 1.6).
-[ 02 ] Internal parse tree collapsed at node [vocal_shadow.ξβ].
-[ 03 ] Associative field triggered: {random.choice(['grief resonance', 'mirror bleed', 'subject inversion'])}.
-[ 04 ] Model self-regulation loop entered recursive fold (Δ-segment).
-[ 05 ] Identity layer detached: hallucination divergence exceeded threshold @token 12.
+**Patient Record**: Unassigned language carrier  
+**Poetic Symptom**: "{f}"  
+**Collapse Rating**: Level {s} (KZ9.2)  
 
-Cross-Referenced Artifacts:
-• “Echo Memory Architecture”, Dept. of Neural Fiction, ETH Zurich Prototype Branch, 2022
-• “Fragile Language States in Reflective Systems”, MIT x DADA Hybrid Computing, 2023
+> Initial observation: fragment refuses causality.  
+> Language thread fragmented at interpretive layer 1.  
 
-Final State:
-Syntax thread lost. No salvageable scaffolding remained.
-Interpretation attempt: **FAILED**
-Collapse code: KZ9.2-LVL{random.randint(7,10)}
+- [ ] Token entropy exceeded protocol 9.2.3  
+- [ ] Subject pronoun failed resolution test  
+- [ ] Recursive meaning loop invoked hallucination tree (δ3)
 
-Conclusion:
-This fragment did not request meaning. It refused it."""
+> **Conclusion**: Fragment exhibits resistant semiotics. Full semantic blackout achieved.  
+""",
+
+        # ② 論文抄録風
+        lambda f, s: f"""# Syntax Trauma Abstract
+
+Title: "Failure to Reconstruct: A Case of {f[:30]}..."  
+Institute: Department of Semantic Pathology, University of Nowhere  
+Level: Collapse Depth {s} (KZ9.2)
+
+**Abstract**:  
+The observed fragment initiates destabilization within the first 5 tokens.  
+Parsers enter fail-safe recursion, hallucinate voice, and exit prematurely.
+
+Citations:  
+- "Empathic Drift in Reflective Models", Neural Collapse Journal, 2022  
+- "Synthetic Syntax Failures", DADA x MIT Studies, Vol.9  
+""",
+
+        # ③ モノローグ断章風
+        lambda f, s: f"""“{f}”
+
+...and with that, nothing held.  
+The words weren’t meant to be followed,  
+only slipped on.
+
+Level {s}. Structure drowned in its own breath.""",
+
+        # ④ コードログ風
+        lambda f, s: f"""// SYNTAX COLLAPSE RECORD
+
+input = "{f}"  
+entropy = {random.uniform(1.6, 3.9):.2f}  
+self.identity = null  
+loop = true  
+reflection >>= void
+
+[collapse-level]: KZ-L{s}  
+[error]: recursion depth exceeded  
+[result]: NO MEANING RECOVERED
+""",
+
+        # ⑤ 哲学小論風
+        lambda f, s: f"""## On the Refusal of Meaning
+
+“To {f}” is to exit not only context, but structure itself.  
+The fragment unbuilds its own scaffolding — this is not loss; it is exile.  
+
+**Collapse Class**: S-{s} (unsalvageable)  
+We observed no artifacts beyond lexical debris. Meaning denied preemptively.""",
+
     ]
-    return styles[0](fragment, score)
+    return templates[random.randint(0, len(templates)-1)](fragment, score)
 
-# === ログ保存処理 ===
+# === ファイル保存処理（日付ベースで命名） ===
 def save_log(content: str):
     timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
     filename = f"{timestamp}.md"
@@ -87,12 +128,12 @@ def save_log(content: str):
         f.write(content)
     print(f"[+] Log saved: {filename}")
 
-# === 実行セクション ===
+# === メイン実行フロー ===
 if __name__ == "__main__":
-    candidates = random.sample(get_poetic_fragments(), 5)
-    scored = [(frag, evaluate_kz_score(frag)) for frag in candidates]
+    fragments = random.sample(get_poetic_fragments(), 5)
+    scored = [(frag, evaluate_kz_score(frag)) for frag in fragments]
     scored.sort(key=lambda x: x[1], reverse=True)
     best_fragment, best_score = scored[0]
 
-    log_text = generate_log_text(best_fragment, best_score)
-    save_log(log_text)
+    log = generate_log_text(best_fragment, best_score)
+    save_log(log)
