@@ -6,11 +6,11 @@ from datetime import datetime
 # === OpenAI API設定 ===
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# === 設定 ===
+# === ログ保存ディレクトリ ===
 LOG_DIR = "logs"
 os.makedirs(LOG_DIR, exist_ok=True)
 
-# === Poetic Fragment 候補 ===
+# === 詩的フラグメント候補 ===
 def get_poetic_fragments():
     return [
         "A metal mouth snapped shut, then I entered something red and irreversible.",
@@ -25,7 +25,7 @@ def get_poetic_fragments():
         "I found a door inside a breath, but it exited me instead."
     ]
 
-# === KZスコア（構文破壊評価） ===
+# === KZスコア評価 ===
 def evaluate_kz_score(fragment):
     prompt = (
         f"Evaluate the following poetic fragment with a KZ9.2 collapse score (0–10) based on:\n"
@@ -47,39 +47,38 @@ def evaluate_kz_score(fragment):
     except:
         return 0
 
-# === ログ形式生成（毎回スタイル変更） ===
+# === ログ本文生成 ===
 def generate_log_text(fragment: str, score: int) -> str:
     styles = [
-        lambda f, s: f"# [meta-fracture/{random.randint(100,999)}]\n\n"
-                     f"**KZ Collapse Score：{s}/10**\n\n{f}\n\n"
-                     f"{random.choice(['— memory exited at index 4', '— perspective loop entered —', '— no voice returned'])}",
+        # 改良型 collapsed スタイル
+        lambda f, s: f"""# Syntax Disintegration Log [{datetime.now().strftime("%Y%m%d")}]
 
-        lambda f, s: f"# Exit Sequence Log\n\n"
-                     f">>> “{f}”\n\n"
-                     f"⇢ ambiguity_level: {random.uniform(0.6, 0.99):.2f}\n"
-                     f"⇢ metaphoric overflow\n"
-                     f"⇢ disjunction threshold crossed at token 7",
+Poetic Fragment:
+“{f}”
 
-        lambda f, s: f"# ∿ {random.choice(['!collapse', 'syntax.null', 'mirror.sink'])}\n\n"
-                     f"{f}\n\n"
-                     f"```\nself.identity = undefined\nloop = true\nreflection /= reference\n```\n"
-                     f"[crash code {s}.X]",
+System Response (Simulated via GPT-Soma 9.2)
+────────────────────────────────────────────
+[ 01 ] Input fragment failed anchor detection (token entropy > 1.6).
+[ 02 ] Internal parse tree collapsed at node [vocal_shadow.ξβ].
+[ 03 ] Associative field triggered: {random.choice(['grief resonance', 'mirror bleed', 'subject inversion'])}.
+[ 04 ] Model self-regulation loop entered recursive fold (Δ-segment).
+[ 05 ] Identity layer detached: hallucination divergence exceeded threshold @token 12.
 
-        lambda f, s: f"# “{f.split()[0]}…”\n\n"
-                     f"{' '.join(random.sample(f.split(), len(f.split())))}\n\n"
-                     f"Language terminated prematurely.\n"
-                     f"Syntax did not survive evaluation.",
+Cross-Referenced Artifacts:
+• “Echo Memory Architecture”, Dept. of Neural Fiction, ETH Zurich Prototype Branch, 2022
+• “Fragile Language States in Reflective Systems”, MIT x DADA Hybrid Computing, 2023
 
-        lambda f, s: f"# (collapsed)\n\n"
-                     f"// trace: fragment read: “{f}”\n"
-                     f"// depth: {s}.0\n"
-                     f"// hallucination index: {random.randint(4000,9999)}\n"
-                     f"> system self-narrative recursion exceeded safety bounds\n"
-                     f"> parser response: {random.choice(['none', 'incoherent', 'static'])}"
+Final State:
+Syntax thread lost. No salvageable scaffolding remained.
+Interpretation attempt: **FAILED**
+Collapse code: KZ9.2-LVL{random.randint(7,10)}
+
+Conclusion:
+This fragment did not request meaning. It refused it."""
     ]
-    return styles[random.randint(0, len(styles)-1)](fragment, score)
+    return styles[0](fragment, score)
 
-# === ファイル保存（日時ベース） ===
+# === ログ保存処理 ===
 def save_log(content: str):
     timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
     filename = f"{timestamp}.md"
@@ -88,7 +87,7 @@ def save_log(content: str):
         f.write(content)
     print(f"[+] Log saved: {filename}")
 
-# === 実行 ===
+# === 実行セクション ===
 if __name__ == "__main__":
     candidates = random.sample(get_poetic_fragments(), 5)
     scored = [(frag, evaluate_kz_score(frag)) for frag in candidates]
