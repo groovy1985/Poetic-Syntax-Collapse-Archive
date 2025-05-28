@@ -32,10 +32,16 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add logs/*.md summaries/note/*.md summaries/zine/*.md README.md
+          # ステージングするファイルを条件付きで追加
+          find logs -name "*.md" -exec git add {} +
+          find summaries/note -name "*.md" -exec git add {} + || true
+          find summaries/zine -name "*.md" -exec git add {} + || true
+          git add README.md || true
+
           if git diff --cached --quiet; then
             echo "No changes to commit."
           else
             git commit -m "Auto: Generate new syntax collapse log and summaries"
             git push
           fi
+
