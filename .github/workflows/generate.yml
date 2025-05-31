@@ -2,7 +2,7 @@ name: Generate Syntax Collapse Log
 
 on:
   schedule:
-    - cron: "0 1,5,9 * * *"  # JST 10,14,18,
+    - cron: "0 1,5,9 * * *"  # JST 10,14,18（3回/日）
   workflow_dispatch:
 
 jobs:
@@ -32,7 +32,6 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          # ステージングするファイルを条件付きで追加
           find logs -name "*.md" -exec git add {} +
           find summaries/note -name "*.md" -exec git add {} + || true
           find summaries/zine -name "*.md" -exec git add {} + || true
@@ -43,5 +42,9 @@ jobs:
           else
             git commit -m "Auto: Generate new syntax collapse log and summaries"
             git push
-          fi
 
+      - name: Notify Poemkun Bot
+        run: |
+          curl -X POST https://your-server.com/webhook/poemkun \
+            -H "Content-Type: application/json" \
+            -d '{"repo": "Poetic-Syntax-Collapse-Archive", "trigger": "syntax-collapse-log"}'
