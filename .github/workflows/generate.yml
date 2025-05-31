@@ -2,7 +2,7 @@ name: Generate Syntax Collapse Log
 
 on:
   schedule:
-    - cron: "0 21,1,5,9,13 * * *"  # JST 6,10,14,18,22
+    - cron: "0 1,5,9 * * *"  # JST 10,14,18,
   workflow_dispatch:
 
 jobs:
