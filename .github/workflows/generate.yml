@@ -32,19 +32,18 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          
+          # ステージング対象を選別
           find logs -name "*.md" -exec git add {} +
           find summaries/note -name "*.md" -exec git add {} + || true
           find summaries/zine -name "*.md" -exec git add {} + || true
           git add README.md || true
-
-          if git diff --cached --quiet; then
+          
+          CHANGES=$(git diff --cached --name-only)
+          if [ -z "$CHANGES" ]; then
             echo "No changes to commit."
           else
             git commit -m "Auto: Generate new syntax collapse log and summaries"
             git push
+          fi
 
-      - name: Notify Poemkun Bot
-        run: |
-          curl -X POST https://your-server.com/webhook/poemkun \
-            -H "Content-Type: application/json" \
-            -d '{"repo": "Poetic-Syntax-Collapse-Archive", "trigger": "syntax-collapse-log"}'
