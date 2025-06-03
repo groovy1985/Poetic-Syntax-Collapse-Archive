@@ -37,7 +37,7 @@ jobs:
           cd death-and-the-flower
           pip install -r requirements.txt
 
-      - name: Run death auto-post
+      - name: Run death auto-post (via post_from_file)
         run: |
           cd death-and-the-flower
           python auto_from_external.py \
