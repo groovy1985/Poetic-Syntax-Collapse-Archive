@@ -2,15 +2,17 @@ name: Trigger Death from Push
 
 on:
   push:
+    branches:
+      - main  # 明示的に main ブランチに限定
     paths:
-      - logs/*.md
+      - logs/**.md  # logs/ 配下すべての .md ファイルを対象
 
 jobs:
   post-via-import:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout triggering repo
+      - name: Checkout triggering repo (Poetic)
         uses: actions/checkout@v3
 
       - name: Clone death-and-the-flower
@@ -38,11 +40,4 @@ jobs:
           python auto_from_external.py \
             --source_file "../${{ env.latest_log }}" \
             --source_type corrupt \
-            --persona death
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
-          TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
-          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
-          TWITTER_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_SECRET }}
-          TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
+            --persona dea
