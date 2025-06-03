@@ -15,8 +15,11 @@ jobs:
       - name: Checkout triggering repo (Poetic)
         uses: actions/checkout@v3
 
-      - name: Clone death-and-the-flower
-        run: git clone https://github.com/groovy1985/death-and-the-flower.git
+      - name: Clone death-and-the-flower (with PAT)
+        env:
+          PAT_FOR_CLONE: ${{ secrets.PAT_FOR_CLONE }}
+        run: |
+          git clone https://x-access-token:${PAT_FOR_CLONE}@github.com/groovy1985/death-and-the-flower.git
 
       - name: Find latest log file
         id: get_log
