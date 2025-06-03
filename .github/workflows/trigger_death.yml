@@ -19,7 +19,7 @@ jobs:
         id: get_log
         run: |
           LATEST=$(ls logs | grep -E '^log[0-9]+\.md$' | sort | tail -n 1)
-          echo "latest_log=$LATEST" >> $GITHUB_ENV
+          echo "LATEST_LOG=$LATEST" >> $GITHUB_ENV
 
       - name: Clone death-and-the-flower (with PAT)
         env:
@@ -41,7 +41,7 @@ jobs:
         run: |
           cd death-and-the-flower
           python auto_from_external.py \
-            --source_file "../logs/${{ env.latest_log }}" \
+            --source_file "../logs/${{ env.LATEST_LOG }}" \
             --source_type corrupt \
             --persona death
         env:
